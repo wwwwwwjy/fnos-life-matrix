@@ -1,0 +1,35 @@
+name: Publish Docker image
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, verify and publish the amd64 image
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY,,}"
+          revision="sha-${GITHUB_SHA:0:12}"
+          docker build --platform linux/amd64 --file docker/Dockerfile.image \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --tag "$image:$revision" .
+          docker run --rm --entrypoint python "$image:$revision" -c 'import bridge, sampler'
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker push "$image:$revision"
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            docker tag "$image:$revision" "$image:$GITHUB_REF_NAME"
+            docker push "$image:$GITHUB_REF_NAME"
+          elif [[ "$GITHUB_REF_NAME" == main ]]; then
+            docker tag "$image:$revision" "$image:latest"
+            docker push "$image:latest"
+          fi

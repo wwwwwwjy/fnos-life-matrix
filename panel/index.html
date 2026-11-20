@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>飞牛生命灯阵</title>
+  <link rel="stylesheet" href="/panel.css">
+  <script src="/panel.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>飞牛生命灯阵</h1>
+      <p id="connection" role="status">正在连接控制面板</p>
+    </header>
+    <form id="settings">
+    <section class="preview" aria-labelledby="preview-title">
+      <div class="split">
+        <h2 id="preview-title">实时预览</h2>
+        <div class="preview-controls">
+          <label class="switch"><input type="checkbox" name="power" checked>灯阵电源</label>
+          <button type="button" id="reseed" disabled>重新播种</button>
+          <button type="button" id="calibrate" disabled>显示校准图案</button>
+        </div>
+      </div>
+      <canvas id="matrix" width="1120" height="316" aria-label="四块 8×8 点阵，共 256 颗灯珠的正面预览"></canvas>
+      <div id="readout"></div>
+      <p id="calibration-help" hidden>从灯板正面逐格对照固定图案。比对完成后点「结束校准」。</p>
+      <div class="metrics">
+        <div><span>网络收发</span><strong id="net">—</strong></div>
+        <div><span>存储卷容量</span><strong id="disk">—</strong></div>
+        <div><span>CPU 占用</span><strong id="cpu">—</strong></div>
+      </div>
+    </section>
+      <section id="link-settings">
+        <div class="split">
+          <h2>飞牛协同</h2>
+          <label class="switch"><input type="checkbox" name="linked">启用联动</label>
+        </div>
+        <p>关闭后，灯阵按下方的独立运行设置演化。</p>
+        <div id="mappings" class="cards"></div>
+        <label class="switch"><input type="checkbox" name="offline">飞牛关机或 USB 通讯中断时熄灯</label>
+        <p>如果灯阵仍有电，连续 15 秒收不到通讯后熄灯，恢复通讯后自动点亮。</p>
+      </section>
+      <section>
+        <h2>独立运行与灯板校准</h2>
+        <div id="baseline" class="fields"></div>
+        <div class="fields">
+          <label>每块灯板的方向
+            <select name="orientation">
+              <option value="0">方向 1</option><option value="1">方向 2</option>
+              <option value="2">方向 3</option><option value="3">方向 4</option>
+              <option value="4">方向 5</option><option value="5">方向 6（默认）</option>
+              <option value="6">方向 7</option><option value="7">方向 8</option>
+            </select>
+          </label>
+          <label class="switch reverse"><input type="checkbox" name="reverse">反转灯板排列</label>
+        </div>
+      </section>
+      <section id="demo" hidden>
+        <h2>模拟飞牛指标</h2>
+        <div id="demo-fields" class="fields"></div>
+        <label class="switch"><input id="simulate-offline" type="checkbox">模拟飞牛离线</label>
+      </section>
+      <div class="actions">
+        <div id="message" role="status"></div>
+        <button type="button" id="discard">还原未保存设置</button>
+        <button type="submit" class="primary">保存设置</button>
+      </div>
+    </form>
+    <datalist id="interfaces"></datalist>
+    <datalist id="mounts"></datalist>
+  </main>
+</body>
+</html>

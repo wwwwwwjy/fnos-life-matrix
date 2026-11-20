@@ -1,0 +1,16 @@
+.pio/
+.venv/
+__pycache__/
+settings.json
+settings.demo.json
+.panel-password
+docker/.env
+docker/runtime/
+
+.env
+/firmware/*.bin
+/firmware/*.elf
+.DS_Store
+
+/docker/provision.py
+/panel/fnos-life-matrix.service

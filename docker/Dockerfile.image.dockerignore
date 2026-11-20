@@ -1,0 +1,6 @@
+**
+!LICENSE
+!docker/
+!docker/bridge.py
+!panel/
+!panel/server.py

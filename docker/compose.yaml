@@ -1,0 +1,29 @@
+name: fnos-life-matrix
+services:
+  matrix:
+    image: fnos-life-matrix:local
+    pull_policy: never
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      network: none
+    ports:
+      - "${NAS_IP:?set NAS_IP}:${NAS_PORT:-8765}:8765"
+    restart: unless-stopped
+    environment:
+      NAS_IP: ${NAS_IP:?set NAS_IP}
+      NAS_PORT: ${NAS_PORT:-8765}
+      LISTEN_IP: 0.0.0.0
+      LISTEN_PORT: "8765"
+      NAS_NET_DIR: /nas-net
+      NAS_VOLUME: ${NAS_VOLUME:?set NAS_VOLUME}
+    devices:
+      - ${SERIAL_DEVICE:?set SERIAL_DEVICE}:/dev/matrix:rw
+    group_add:
+      - "${SERIAL_GID:?set SERIAL_GID}"
+    volumes:
+      - ${NAS_VOLUME:?set NAS_VOLUME}:/nas-volume:ro
+      - /proc/1/net:/nas-net:ro
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
